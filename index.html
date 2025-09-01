@@ -18,6 +18,28 @@
             --texto: #333;
             --sombra: rgba(0, 0, 0, 0.1);
             --opacidad-bloqueado: 0.5;
+            
+            /* Colores adicionales para materias únicas */
+            --naranja: #FFD580;
+            --verde-oscuro: #A7C4A0;
+            --lila-oscuro: #C9A8C9;
+            --turquesa: #AFEEEE;
+            --salmon: #FA8072;
+            --menta: #98FB98;
+            --lavanda: #E6E6FA;
+            --durazno: #FFDAB9;
+            --aqua: #7FFFD4;
+            --coral: #F08080;
+            --lima: #32CD32;
+            --violeta: #EE82EE;
+            --azul-claro: #ADD8E6;
+            --rosa-claro: #FFB6C1;
+            --verde-claro: #90EE90;
+            --melon: #F8C8A8;
+            --cielo: #87CEFA;
+            --ciruela: #DDA0DD;
+            --maiz: #FFF8DC;
+            --esmeralda: #50C878;
         }
 
         * {
@@ -220,37 +242,6 @@
         <p class="instrucciones">Haz clic en las materias para marcarlas como aprobadas. Las materias con requisitos se desbloquean al aprobar sus prerrequisitos.</p>
     </header>
 
-    <div class="leyenda">
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--amarillo);"></div>
-            <span>Diseño/Arquitectura</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--verde);"></div>
-            <span>Teoría/Urbanismo</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--lila);"></div>
-            <span>Matemáticas/Física</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--beige);"></div>
-            <span>Lenguaje/Inglés</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--azul);"></div>
-            <span>Estudios Sociales</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--rosado);"></div>
-            <span>Expresión/Plástica</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: var(--borgoña);"></div>
-            <span>Proyecto Final</span>
-        </div>
-    </div>
-
     <div class="malla-container" id="malla-container">
         <!-- La malla se genera dinámicamente con JavaScript -->
     </div>
@@ -261,7 +252,7 @@
     </div>
 
     <script>
-        // Datos de la malla curricular
+        // Datos de la malla curricular con colores únicos para cada materia
         const mallaData = [
             {
                 ano: "Primer Año (ciclo básico)",
@@ -279,21 +270,21 @@
                     {
                         nombre: "II trimestre",
                         materias: [
-                            { codigo: "DA1112", nombre: "Geometría Descriptiva II", requisitos: ["DA1111"], color: "amarillo" },
-                            { codigo: "FS1163", nombre: "Física Básica", requisitos: ["MA1111"], color: "lila" },
-                            { codigo: "MA1112", nombre: "Matemáticas II", requisitos: ["MA1111"], color: "lila" },
-                            { codigo: "LLA112", nombre: "Lenguaje II", requisitos: ["LLA111"], color: "beige" },
-                            { codigo: "CSA212", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA211"], color: "azul" }
+                            { codigo: "DA1112", nombre: "Geometría Descriptiva II", requisitos: ["DA1111"], color: "naranja" },
+                            { codigo: "FS1163", nombre: "Física Básica", requisitos: ["MA1111"], color: "verde-oscuro" },
+                            { codigo: "MA1112", nombre: "Matemáticas II", requisitos: ["MA1111"], color: "lila-oscuro" },
+                            { codigo: "LLA112", nombre: "Lenguaje II", requisitos: ["LLA111"], color: "turquesa" },
+                            { codigo: "CSA212", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA211"], color: "salmon" }
                         ]
                     },
                     {
                         nombre: "III trimestre",
                         materias: [
-                            { codigo: "DA1113", nombre: "Dibujo y Perspectiva", requisitos: ["DA1112"], color: "amarillo" },
-                            { codigo: "FS1117", nombre: "Física de las Estructuras", requisitos: ["MA1112", "FS1163"], color: "lila" },
-                            { codigo: "MA1116", nombre: "Matemáticas III", requisitos: ["MA1112"], color: "lila" },
-                            { codigo: "LLA113", nombre: "Lenguaje III", requisitos: ["LLA112"], color: "beige" },
-                            { codigo: "CSA213", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA212"], color: "azul" }
+                            { codigo: "DA1113", nombre: "Dibujo y Perspectiva", requisitos: ["DA1112"], color: "menta" },
+                            { codigo: "FS1117", nombre: "Física de las Estructuras", requisitos: ["MA1112", "FS1163"], color: "lavanda" },
+                            { codigo: "MA1116", nombre: "Matemáticas III", requisitos: ["MA1112"], color: "durazno" },
+                            { codigo: "LLA113", nombre: "Lenguaje III", requisitos: ["LLA112"], color: "aqua" },
+                            { codigo: "CSA213", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA212"], color: "coral" }
                         ]
                     }
                 ]
@@ -304,31 +295,31 @@
                     {
                         nombre: "IV trimestre",
                         materias: [
-                            { codigo: "DA1311", nombre: "Diseño Básico", requisitos: ["DA1113", "MA1112"], color: "amarillo" },
-                            { codigo: "DA1211", nombre: "Apreciación Plástica y Expresión Gráfica I", requisitos: ["DA1113"], color: "rosado" },
-                            { codigo: "DA1411", nombre: "Introducción Teoría de la Arquitectura", requisitos: ["PL1510"], color: "verde" },
-                            { codigo: "ID2124", nombre: "Inglés para Arquitectura y Urbanismo", requisitos: ["40 Unidades aprob."], color: "beige" },
-                            { codigo: "DA2521", nombre: "Introducción al Diseño Estructural", requisitos: ["MA1116", "FS1117"], color: "lila" }
+                            { codigo: "DA1311", nombre: "Diseño Básico", requisitos: ["DA1113", "MA1112"], color: "lima" },
+                            { codigo: "DA1211", nombre: "Apreciación Plástica y Expresión Gráfica I", requisitos: ["DA1113"], color: "violeta" },
+                            { codigo: "DA1411", nombre: "Introducción Teoría de la Arquitectura", requisitos: ["PL1510"], color: "azul-claro" },
+                            { codigo: "ID2124", nombre: "Inglés para Arquitectura y Urbanismo", requisitos: ["40 Unidades aprob."], color: "rosa-claro" },
+                            { codigo: "DA2521", nombre: "Introducción al Diseño Estructural", requisitos: ["MA1116", "FS1117"], color: "verde-claro" }
                         ]
                     },
                     {
                         nombre: "V trimestre",
                         materias: [
-                            { codigo: "DA1312", nombre: "Diseño Arquitectónico I", requisitos: ["DA1311", "FS1117"], color: "amarillo" },
-                            { codigo: "DA1212", nombre: "Apreciación Plástica y Expresión Gráfica II", requisitos: ["DA1211"], color: "rosado" },
-                            { codigo: "DA1412", nombre: "Teoría de la Arquitectura I", requisitos: ["DA1411"], color: "verde" },
-                            { codigo: "ID2125", nombre: "Inglés para Arquitectura y Urbanismo II", requisitos: ["ID2124"], color: "beige" },
-                            { codigo: "DA2522", nombre: "Diseño Estructural", requisitos: ["MC3250", "DA1311"], color: "lila" }
+                            { codigo: "DA1312", nombre: "Diseño Arquitectónico I", requisitos: ["DA1311", "FS1117"], color: "melon" },
+                            { codigo: "DA1212", nombre: "Apreciación Plástica y Expresión Gráfica II", requisitos: ["DA1211"], color: "cielo" },
+                            { codigo: "DA1412", nombre: "Teoría de la Arquitectura I", requisitos: ["DA1411"], color: "ciruela" },
+                            { codigo: "ID2125", nombre: "Inglés para Arquitectura y Urbanismo II", requisitos: ["ID2124"], color: "maiz" },
+                            { codigo: "DA2522", nombre: "Diseño Estructural", requisitos: ["MC3250", "DA1311"], color: "esmeralda" }
                         ]
                     },
                     {
                         nombre: "VI trimestre",
                         materias: [
-                            { codigo: "DA1313", nombre: "Diseño Arquitectónico II", requisitos: ["DA1312", "DA1411", "DA1211"], color: "amarillo" },
-                            { codigo: "DA2211", nombre: "Apreciación Plástica y Expresión Gráfica III", requisitos: ["DA1212"], color: "rosado" },
-                            { codigo: "DA2411", nombre: "Teoría de la Arquitectura II", requisitos: ["DA1412", "DA1311"], color: "verde" },
-                            { codigo: "ID2126", nombre: "Inglés para Arquitectura y Urbanismo III", requisitos: ["ID2125"], color: "beige" },
-                            { codigo: "DA2523", nombre: "Proyecto Estructural de Edificaciones", requisitos: ["MC3252", "DA1312"], color: "lila" }
+                            { codigo: "DA1313", nombre: "Diseño Arquitectónico II", requisitos: ["DA1312", "DA1411", "DA1211"], color: "naranja" },
+                            { codigo: "DA2211", nombre: "Apreciación Plástica y Expresión Gráfica III", requisitos: ["DA1212"], color: "verde-oscuro" },
+                            { codigo: "DA2411", nombre: "Teoría de la Arquitectura II", requisitos: ["DA1412", "DA1311"], color: "lila-oscuro" },
+                            { codigo: "ID2126", nombre: "Inglés para Arquitectura y Urbanismo III", requisitos: ["ID2125"], color: "turquesa" },
+                            { codigo: "DA2523", nombre: "Proyecto Estructural de Edificaciones", requisitos: ["MC3252", "DA1312"], color: "salmon" }
                         ]
                     }
                 ]
@@ -339,31 +330,31 @@
                     {
                         nombre: "VII trimestre",
                         materias: [
-                            { codigo: "DA1314", nombre: "Diseño Arquitectónico III", requisitos: ["DA1313", "MA1116"], color: "amarillo" },
-                            { codigo: "DA2412", nombre: "Teoría de la Arquitectura III", requisitos: ["DA2411"], color: "verde" },
-                            { codigo: "ID3124", nombre: "Inglés para Arquitectura y Urbanismo IV", requisitos: ["ID2126"], color: "beige" },
-                            { codigo: "DA2541", nombre: "Arquitectura y Ambiente", requisitos: ["DA1312"], color: "azul" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA1314", nombre: "Diseño Arquitectónico III", requisitos: ["DA1313", "MA1116"], color: "menta" },
+                            { codigo: "DA2412", nombre: "Teoría de la Arquitectura III", requisitos: ["DA2411"], color: "lavanda" },
+                            { codigo: "ID3124", nombre: "Inglés para Arquitectura y Urbanismo IV", requisitos: ["ID2126"], color: "durazno" },
+                            { codigo: "DA2541", nombre: "Arquitectura y Ambiente", requisitos: ["DA1312"], color: "aqua" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "coral" }
                         ]
                     },
                     {
                         nombre: "VIII trimestre",
                         materias: [
-                            { codigo: "DA2311", nombre: "Diseño Arquitectónico IV", requisitos: ["DA1314"], color: "amarillo" },
-                            { codigo: "DA2413", nombre: "Teoría de la Arquitectura IV", requisitos: ["DA2412"], color: "verde" },
-                            { codigo: "DA2511", nombre: "Elementos de la Construcción I", requisitos: ["DA1312"], color: "lila" },
-                            { codigo: "DA2121", nombre: "Expresión Digital I", requisitos: ["DA1311", "DA2211"], color: "rosado" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA2311", nombre: "Diseño Arquitectónico IV", requisitos: ["DA1314"], color: "lima" },
+                            { codigo: "DA2413", nombre: "Teoría de la Arquitectura IV", requisitos: ["DA2412"], color: "violeta" },
+                            { codigo: "DA2511", nombre: "Elementos de la Construcción I", requisitos: ["DA1312"], color: "azul-claro" },
+                            { codigo: "DA2121", nombre: "Expresión Digital I", requisitos: ["DA1311", "DA2211"], color: "rosa-claro" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "verde-claro" }
                         ]
                     },
                     {
                         nombre: "IX trimestre",
                         materias: [
-                            { codigo: "DA2312", nombre: "Diseño Arquitectónico V", requisitos: ["DA2311", "DA2412"], color: "amarillo" },
-                            { codigo: "DA3411", nombre: "Teoría de la Arquitectura V", requisitos: ["DA2413"], color: "verde" },
-                            { codigo: "DA2512", nombre: "Elementos de la Construcción II", requisitos: ["DA2511"], color: "lila" },
-                            { codigo: "DA2122", nombre: "Expresión Digital II", requisitos: ["DA2121"], color: "rosado" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA2312", nombre: "Diseño Arquitectónico V", requisitos: ["DA2311", "DA2412"], color: "melon" },
+                            { codigo: "DA3411", nombre: "Teoría de la Arquitectura V", requisitos: ["DA2413"], color: "cielo" },
+                            { codigo: "DA2512", nombre: "Elementos de la Construcción II", requisitos: ["DA2511"], color: "ciruela" },
+                            { codigo: "DA2122", nombre: "Expresión Digital II", requisitos: ["DA2121"], color: "maiz" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "esmeralda" }
                         ]
                     }
                 ]
@@ -377,26 +368,26 @@
                             { codigo: "DA2313", nombre: "Diseño Arquitectónico VI", requisitos: ["DA2312", "DA2122"], color: "amarillo" },
                             { codigo: "DA2561", nombre: "Ejercicio de la profesión", requisitos: ["DA2312", "DA3411"], color: "verde" },
                             { codigo: "DA2513", nombre: "Elementos de la Construcción III", requisitos: ["DA1314", "DA2512"], color: "lila" },
-                            { codigo: "DA2123", nombre: "Expresión Digital III", requisitos: ["DA2122"], color: "rosado" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA2123", nombre: "Expresión Digital III", requisitos: ["DA2122"], color: "beige" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "azul" }
                         ]
                     },
                     {
                         nombre: "XI trimestre",
                         materias: [
-                            { codigo: "DA2314", nombre: "Diseño Arquitectónico VII", requisitos: ["DA2313", "DA2412"], color: "amarillo" },
-                            { codigo: "DA2562", nombre: "Gerencia de Proyectos", requisitos: ["DA2312", "DA2512"], color: "verde" },
-                            { codigo: "DA4541", nombre: "Paisajismo", requisitos: ["DA2541"], color: "azul" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA2314", nombre: "Diseño Arquitectónico VII", requisitos: ["DA2313", "DA2412"], color: "rosado" },
+                            { codigo: "DA2562", nombre: "Gerencia de Proyectos", requisitos: ["DA2312", "DA2512"], color: "borgoña" },
+                            { codigo: "DA4541", nombre: "Paisajismo", requisitos: ["DA2541"], color: "naranja" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "verde-oscuro" }
                         ]
                     },
                     {
                         nombre: "XII trimestre",
                         materias: [
-                            { codigo: "DA3311", nombre: "Diseño Arquitectónico VIII", requisitos: ["DA2314", "MC3253", "DA2562"], color: "amarillo" },
-                            { codigo: "DA2563", nombre: "Gerencia de obras", requisitos: ["DA2562"], color: "verde" },
-                            { codigo: "ELECT1", nombre: "Electiva I", requisitos: ["DA2561"], color: "rosado" },
-                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                            { codigo: "DA3311", nombre: "Diseño Arquitectónico VIII", requisitos: ["DA2314", "MC3253", "DA2562"], color: "lila-oscuro" },
+                            { codigo: "DA2563", nombre: "Gerencia de obras", requisitos: ["DA2562"], color: "turquesa" },
+                            { codigo: "ELECT1", nombre: "Electiva I", requisitos: ["DA2561"], color: "salmon" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "menta" }
                         ]
                     }
                 ]
@@ -407,22 +398,22 @@
                     {
                         nombre: "XIII trimestre",
                         materias: [
-                            { codigo: "DA3312", nombre: "Diseño Arquitectónico IX", requisitos: ["DA3311"], color: "amarillo" },
-                            { codigo: "ELECT2", nombre: "Electiva II", color: "rosado" },
-                            { codigo: "ELECT3", nombre: "Electiva III", color: "rosado" }
+                            { codigo: "DA3312", nombre: "Diseño Arquitectónico IX", requisitos: ["DA3311"], color: "lavanda" },
+                            { codigo: "ELECT2", nombre: "Electiva II", color: "durazno" },
+                            { codigo: "ELECT3", nombre: "Electiva III", color: "aqua" }
                         ]
                     },
                     {
                         nombre: "XIV trimestre",
                         materias: [
-                            { codigo: "DA3313", nombre: "Diseño Arquitectónico X", requisitos: ["DA3312"], color: "amarillo" },
-                            { codigo: "EP1107", nombre: "Seminario", color: "verde" }
+                            { codigo: "DA3313", nombre: "Diseño Arquitectónico X", requisitos: ["DA3312"], color: "coral" },
+                            { codigo: "EP1107", nombre: "Seminario", color: "lima" }
                         ]
                     },
                     {
                         nombre: "XV trimestre",
                         materias: [
-                            { codigo: "EP3307", nombre: "Proyecto de Grado a Dedicación Exclusiva", requisitos: ["DA3313", "EP1107", "Perm. Coord."], color: "borgoña" }
+                            { codigo: "EP3307", nombre: "Proyecto de Grado a Dedicación Exclusiva", requisitos: ["DA3313", "EP1107", "Perm. Coord."], color: "violeta" }
                         ]
                     }
                 ]
@@ -437,7 +428,27 @@
             beige: "var(--beige)",
             azul: "var(--azul)",
             rosado: "var(--rosado)",
-            borgoña: "var(--borgoña)"
+            borgoña: "var(--borgoña)",
+            naranja: "var(--naranja)",
+            "verde-oscuro": "var(--verde-oscuro)",
+            "lila-oscuro": "var(--lila-oscuro)",
+            turquesa: "var(--turquesa)",
+            salmon: "var(--salmon)",
+            menta: "var(--menta)",
+            lavanda: "var(--lavanda)",
+            durazno: "var(--durazno)",
+            aqua: "var(--aqua)",
+            coral: "var(--coral)",
+            lima: "var(--lima)",
+            violeta: "var(--violeta)",
+            "azul-claro": "var(--azul-claro)",
+            "rosa-claro": "var(--rosa-claro)",
+            "verde-claro": "var(--verde-claro)",
+            melon: "var(--melon)",
+            cielo: "var(--cielo)",
+            ciruela: "var(--ciruela)",
+            maiz: "var(--maiz)",
+            esmeralda: "var(--esmeralda)"
         };
 
         // Estado de las materias
