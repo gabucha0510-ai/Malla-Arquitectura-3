@@ -17,6 +17,7 @@
             --gris-oscuro: #ccc;
             --texto: #333;
             --sombra: rgba(0, 0, 0, 0.1);
+            --opacidad-bloqueado: 0.5;
         }
 
         * {
@@ -98,6 +99,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px var(--sombra);
+            opacity: var(--opacidad-bloqueado);
         }
 
         .materia:hover {
@@ -106,12 +108,14 @@
         }
 
         .materia.aprobada {
+            opacity: 1 !important;
+        }
+
+        .materia.desbloqueada {
             opacity: 0.8;
         }
 
         .materia-bloqueada {
-            background-color: var(--gris) !important;
-            color: #888;
             cursor: not-allowed;
         }
 
@@ -178,6 +182,27 @@
             background-color: #600018;
         }
 
+        .leyenda {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .leyenda-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
         @media (max-width: 768px) {
             .malla-container {
                 flex-direction: column;
@@ -194,6 +219,37 @@
         <h1>Malla Curricular - Arquitectura USB</h1>
         <p class="instrucciones">Haz clic en las materias para marcarlas como aprobadas. Las materias con requisitos se desbloquean al aprobar sus prerrequisitos.</p>
     </header>
+
+    <div class="leyenda">
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--amarillo);"></div>
+            <span>Diseño/Arquitectura</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--verde);"></div>
+            <span>Teoría/Urbanismo</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--lila);"></div>
+            <span>Matemáticas/Física</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--beige);"></div>
+            <span>Lenguaje/Inglés</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--azul);"></div>
+            <span>Estudios Sociales</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--rosado);"></div>
+            <span>Expresión/Plástica</span>
+        </div>
+        <div class="leyenda-item">
+            <div class="leyenda-color" style="background-color: var(--borgoña);"></div>
+            <span>Proyecto Final</span>
+        </div>
+    </div>
 
     <div class="malla-container" id="malla-container">
         <!-- La malla se genera dinámicamente con JavaScript -->
@@ -419,6 +475,20 @@
             return materia.requisitos.some(requisito => !estaAprobada(requisito));
         }
 
+        // Verificar si una materia está desbloqueada (puede ser clickeada)
+        function estaDesbloqueada(materia) {
+            if (!materia.requisitos) return true;
+            
+            // Verificar requisitos de unidades aprobadas
+            if (materia.codigo === "ID2124") {
+                const unidadesAprobadas = Object.keys(materiasEstado).filter(cod => materiasEstado[cod]).length;
+                return unidadesAprobadas >= 40;
+            }
+            
+            // Verificar otros requisitos
+            return !materia.requisitos.some(requisito => !estaAprobada(requisito));
+        }
+
         // Obtener requisitos faltantes
         function obtenerRequisitosFaltantes(materia) {
             if (!materia.requisitos) return "";
@@ -465,6 +535,7 @@
                         // Verificar estado de la materia
                         const aprobada = estaAprobada(materia.codigo);
                         const bloqueada = !aprobada && estaBloqueada(materia);
+                        const desbloqueada = !aprobada && estaDesbloqueada(materia);
                         
                         if (aprobada) {
                             materiaDiv.classList.add('aprobada');
@@ -476,8 +547,10 @@
                             tooltip.className = 'tooltip';
                             tooltip.textContent = `Requisitos: ${obtenerRequisitosFaltantes(materia)}`;
                             materiaDiv.appendChild(tooltip);
+                        } else if (desbloqueada) {
+                            materiaDiv.classList.add('desbloqueada');
+                            materiaDiv.addEventListener('click', () => toggleMateria(materia.codigo));
                         } else {
-                            // Solo agregar evento click si no está bloqueada
                             materiaDiv.addEventListener('click', () => toggleMateria(materia.codigo));
                         }
 
@@ -563,9 +636,27 @@
 
         // Alternar estado de una materia
         function toggleMateria(codigo) {
-            materiasEstado[codigo] = !materiasEstado[codigo];
-            guardarEstado();
-            renderizarMalla();
+            // Solo permitir cambiar estado si está desbloqueada
+            const materia = encontrarMateriaPorCodigo(codigo);
+            if (materia && estaDesbloqueada(materia)) {
+                materiasEstado[codigo] = !materiasEstado[codigo];
+                guardarEstado();
+                renderizarMalla();
+            }
+        }
+
+        // Encontrar materia por código
+        function encontrarMateriaPorCodigo(codigo) {
+            for (const ano of mallaData) {
+                for (const trimestre of ano.trimestres) {
+                    for (const materia of trimestre.materias) {
+                        if (materia.codigo === codigo) {
+                            return materia;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         // Reiniciar progreso
