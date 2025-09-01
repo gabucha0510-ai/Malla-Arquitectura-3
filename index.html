@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla Curricular - Arquitectura USB</title>
+    <style>
+        :root {
+            --amarillo: #FFED86;
+            --verde: #C9E4C5;
+            --lila: #D8BFD8;
+            --beige: #F5F5DC;
+            --azul: #87CEEB;
+            --rosado: #FFD1DC;
+            --borgoña: #800020;
+            --gris: #f0f0f0;
+            --gris-oscuro: #ccc;
+            --texto: #333;
+            --sombra: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--texto);
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--amarillo), var(--beige));
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--sombra);
+        }
+
+        h1 {
+            color: var(--borgoña);
+            margin-bottom: 10px;
+        }
+
+        .instrucciones {
+            margin: 15px 0;
+            font-style: italic;
+            color: #555;
+        }
+
+        .malla-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            gap: 15px;
+        }
+
+        .ano {
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--sombra);
+            padding: 15px;
+        }
+
+        .ano-titulo {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: var(--borgoña);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .trimestre {
+            margin-bottom: 20px;
+        }
+
+        .trimestre-titulo {
+            padding: 8px;
+            background-color: var(--gris);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .materia {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px var(--sombra);
+        }
+
+        .materia:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--sombra);
+        }
+
+        .materia.aprobada {
+            opacity: 0.8;
+        }
+
+        .materia-bloqueada {
+            background-color: var(--gris) !important;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .codigo {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .nombre {
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .requisitos {
+            font-size: 0.75em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .linea-conexion {
+            position: absolute;
+            background-color: var(--borgoña);
+            z-index: -1;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            z-index: 100;
+            width: max-content;
+            max-width: 250px;
+            display: none;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 5px;
+        }
+
+        .materia-bloqueada:hover .tooltip {
+            display: block;
+        }
+
+        .botones {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--borgoña);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #600018;
+        }
+
+        @media (max-width: 768px) {
+            .malla-container {
+                flex-direction: column;
+            }
+            
+            .ano {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Malla Curricular - Arquitectura USB</h1>
+        <p class="instrucciones">Haz clic en las materias para marcarlas como aprobadas. Las materias con requisitos se desbloquean al aprobar sus prerrequisitos.</p>
+    </header>
+
+    <div class="malla-container" id="malla-container">
+        <!-- La malla se genera dinámicamente con JavaScript -->
+    </div>
+
+    <div class="botones">
+        <button id="btnReiniciar">Reiniciar Progreso</button>
+        <button id="btnMarcarTodo">Marcar Todo como Aprobado</button>
+    </div>
+
+    <script>
+        // Datos de la malla curricular
+        const mallaData = [
+            {
+                ano: "Primer Año (ciclo básico)",
+                trimestres: [
+                    {
+                        nombre: "I trimestre",
+                        materias: [
+                            { codigo: "DA1111", nombre: "Geometría Descriptiva I", color: "amarillo" },
+                            { codigo: "PL1510", nombre: "Arquitectura y Urbanismo", color: "verde" },
+                            { codigo: "MA1111", nombre: "Matemáticas I", color: "lila" },
+                            { codigo: "LLA111", nombre: "Lenguaje I", color: "beige" },
+                            { codigo: "CSA211", nombre: "Venezuela ante el siglo XXI I", color: "azul" }
+                        ]
+                    },
+                    {
+                        nombre: "II trimestre",
+                        materias: [
+                            { codigo: "DA1112", nombre: "Geometría Descriptiva II", requisitos: ["DA1111"], color: "amarillo" },
+                            { codigo: "FS1163", nombre: "Física Básica", requisitos: ["MA1111"], color: "lila" },
+                            { codigo: "MA1112", nombre: "Matemáticas II", requisitos: ["MA1111"], color: "lila" },
+                            { codigo: "LLA112", nombre: "Lenguaje II", requisitos: ["LLA111"], color: "beige" },
+                            { codigo: "CSA212", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA211"], color: "azul" }
+                        ]
+                    },
+                    {
+                        nombre: "III trimestre",
+                        materias: [
+                            { codigo: "DA1113", nombre: "Dibujo y Perspectiva", requisitos: ["DA1112"], color: "amarillo" },
+                            { codigo: "FS1117", nombre: "Física de las Estructuras", requisitos: ["MA1112", "FS1163"], color: "lila" },
+                            { codigo: "MA1116", nombre: "Matemáticas III", requisitos: ["MA1112"], color: "lila" },
+                            { codigo: "LLA113", nombre: "Lenguaje III", requisitos: ["LLA112"], color: "beige" },
+                            { codigo: "CSA213", nombre: "Venezuela ante el siglo XXI", requisitos: ["CSA212"], color: "azul" }
+                        ]
+                    }
+                ]
+            },
+            {
+                ano: "Segundo Año",
+                trimestres: [
+                    {
+                        nombre: "IV trimestre",
+                        materias: [
+                            { codigo: "DA1311", nombre: "Diseño Básico", requisitos: ["DA1113", "MA1112"], color: "amarillo" },
+                            { codigo: "DA1211", nombre: "Apreciación Plástica y Expresión Gráfica I", requisitos: ["DA1113"], color: "rosado" },
+                            { codigo: "DA1411", nombre: "Introducción Teoría de la Arquitectura", requisitos: ["PL1510"], color: "verde" },
+                            { codigo: "ID2124", nombre: "Inglés para Arquitectura y Urbanismo", requisitos: ["40 Unidades aprob."], color: "beige" },
+                            { codigo: "DA2521", nombre: "Introducción al Diseño Estructural", requisitos: ["MA1116", "FS1117"], color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "V trimestre",
+                        materias: [
+                            { codigo: "DA1312", nombre: "Diseño Arquitectónico I", requisitos: ["DA1311", "FS1117"], color: "amarillo" },
+                            { codigo: "DA1212", nombre: "Apreciación Plástica y Expresión Gráfica II", requisitos: ["DA1211"], color: "rosado" },
+                            { codigo: "DA1412", nombre: "Teoría de la Arquitectura I", requisitos: ["DA1411"], color: "verde" },
+                            { codigo: "ID2125", nombre: "Inglés para Arquitectura y Urbanismo II", requisitos: ["ID2124"], color: "beige" },
+                            { codigo: "DA2522", nombre: "Diseño Estructural", requisitos: ["MC3250", "DA1311"], color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "VI trimestre",
+                        materias: [
+                            { codigo: "DA1313", nombre: "Diseño Arquitectónico II", requisitos: ["DA1312", "DA1411", "DA1211"], color: "amarillo" },
+                            { codigo: "DA2211", nombre: "Apreciación Plástica y Expresión Gráfica III", requisitos: ["DA1212"], color: "rosado" },
+                            { codigo: "DA2411", nombre: "Teoría de la Arquitectura II", requisitos: ["DA1412", "DA1311"], color: "verde" },
+                            { codigo: "ID2126", nombre: "Inglés para Arquitectura y Urbanismo III", requisitos: ["ID2125"], color: "beige" },
+                            { codigo: "DA2523", nombre: "Proyecto Estructural de Edificaciones", requisitos: ["MC3252", "DA1312"], color: "lila" }
+                        ]
+                    }
+                ]
+            },
+            {
+                ano: "Tercer Año",
+                trimestres: [
+                    {
+                        nombre: "VII trimestre",
+                        materias: [
+                            { codigo: "DA1314", nombre: "Diseño Arquitectónico III", requisitos: ["DA1313", "MA1116"], color: "amarillo" },
+                            { codigo: "DA2412", nombre: "Teoría de la Arquitectura III", requisitos: ["DA2411"], color: "verde" },
+                            { codigo: "ID3124", nombre: "Inglés para Arquitectura y Urbanismo IV", requisitos: ["ID2126"], color: "beige" },
+                            { codigo: "DA2541", nombre: "Arquitectura y Ambiente", requisitos: ["DA1312"], color: "azul" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "VIII trimestre",
+                        materias: [
+                            { codigo: "DA2311", nombre: "Diseño Arquitectónico IV", requisitos: ["DA1314"], color: "amarillo" },
+                            { codigo: "DA2413", nombre: "Teoría de la Arquitectura IV", requisitos: ["DA2412"], color: "verde" },
+                            { codigo: "DA2511", nombre: "Elementos de la Construcción I", requisitos: ["DA1312"], color: "lila" },
+                            { codigo: "DA2121", nombre: "Expresión Digital I", requisitos: ["DA1311", "DA2211"], color: "rosado" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "IX trimestre",
+                        materias: [
+                            { codigo: "DA2312", nombre: "Diseño Arquitectónico V", requisitos: ["DA2311", "DA2412"], color: "amarillo" },
+                            { codigo: "DA3411", nombre: "Teoría de la Arquitectura V", requisitos: ["DA2413"], color: "verde" },
+                            { codigo: "DA2512", nombre: "Elementos de la Construcción II", requisitos: ["DA2511"], color: "lila" },
+                            { codigo: "DA2122", nombre: "Expresión Digital II", requisitos: ["DA2121"], color: "rosado" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    }
+                ]
+            },
+            {
+                ano: "Cuarto Año",
+                trimestres: [
+                    {
+                        nombre: "X trimestre",
+                        materias: [
+                            { codigo: "DA2313", nombre: "Diseño Arquitectónico VI", requisitos: ["DA2312", "DA2122"], color: "amarillo" },
+                            { codigo: "DA2561", nombre: "Ejercicio de la profesión", requisitos: ["DA2312", "DA3411"], color: "verde" },
+                            { codigo: "DA2513", nombre: "Elementos de la Construcción III", requisitos: ["DA1314", "DA2512"], color: "lila" },
+                            { codigo: "DA2123", nombre: "Expresión Digital III", requisitos: ["DA2122"], color: "rosado" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "XI trimestre",
+                        materias: [
+                            { codigo: "DA2314", nombre: "Diseño Arquitectónico VII", requisitos: ["DA2313", "DA2412"], color: "amarillo" },
+                            { codigo: "DA2562", nombre: "Gerencia de Proyectos", requisitos: ["DA2312", "DA2512"], color: "verde" },
+                            { codigo: "DA4541", nombre: "Paisajismo", requisitos: ["DA2541"], color: "azul" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    },
+                    {
+                        nombre: "XII trimestre",
+                        materias: [
+                            { codigo: "DA3311", nombre: "Diseño Arquitectónico VIII", requisitos: ["DA2314", "MC3253", "DA2562"], color: "amarillo" },
+                            { codigo: "DA2563", nombre: "Gerencia de obras", requisitos: ["DA2562"], color: "verde" },
+                            { codigo: "ELECT1", nombre: "Electiva I", requisitos: ["DA2561"], color: "rosado" },
+                            { codigo: "EG", nombre: "Estudios Generales", color: "lila" }
+                        ]
+                    }
+                ]
+            },
+            {
+                ano: "Quinto Año",
+                trimestres: [
+                    {
+                        nombre: "XIII trimestre",
+                        materias: [
+                            { codigo: "DA3312", nombre: "Diseño Arquitectónico IX", requisitos: ["DA3311"], color: "amarillo" },
+                            { codigo: "ELECT2", nombre: "Electiva II", color: "rosado" },
+                            { codigo: "ELECT3", nombre: "Electiva III", color: "rosado" }
+                        ]
+                    },
+                    {
+                        nombre: "XIV trimestre",
+                        materias: [
+                            { codigo: "DA3313", nombre: "Diseño Arquitectónico X", requisitos: ["DA3312"], color: "amarillo" },
+                            { codigo: "EP1107", nombre: "Seminario", color: "verde" }
+                        ]
+                    },
+                    {
+                        nombre: "XV trimestre",
+                        materias: [
+                            { codigo: "EP3307", nombre: "Proyecto de Grado a Dedicación Exclusiva", requisitos: ["DA3313", "EP1107", "Perm. Coord."], color: "borgoña" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Colores CSS
+        const colores = {
+            amarillo: "var(--amarillo)",
+            verde: "var(--verde)",
+            lila: "var(--lila)",
+            beige: "var(--beige)",
+            azul: "var(--azul)",
+            rosado: "var(--rosado)",
+            borgoña: "var(--borgoña)"
+        };
+
+        // Estado de las materias
+        let materiasEstado = {};
+
+        // Cargar estado desde localStorage
+        function cargarEstado() {
+            const estadoGuardado = localStorage.getItem('materiasEstado');
+            if (estadoGuardado) {
+                materiasEstado = JSON.parse(estadoGuardado);
+            }
+        }
+
+        // Guardar estado en localStorage
+        function guardarEstado() {
+            localStorage.setItem('materiasEstado', JSON.stringify(materiasEstado));
+        }
+
+        // Verificar si una materia está aprobada
+        function estaAprobada(codigo) {
+            return materiasEstado[codigo] === true;
+        }
+
+        // Verificar si una materia está bloqueada
+        function estaBloqueada(materia) {
+            if (!materia.requisitos) return false;
+            
+            // Verificar requisitos de unidades aprobadas
+            if (materia.codigo === "ID2124") {
+                const unidadesAprobadas = Object.keys(materiasEstado).filter(cod => materiasEstado[cod]).length;
+                return unidadesAprobadas < 40;
+            }
+            
+            // Verificar otros requisitos
+            return materia.requisitos.some(requisito => !estaAprobada(requisito));
+        }
+
+        // Obtener requisitos faltantes
+        function obtenerRequisitosFaltantes(materia) {
+            if (!materia.requisitos) return "";
+            
+            if (materia.codigo === "ID2124") {
+                const unidadesAprobadas = Object.keys(materiasEstado).filter(cod => materiasEstado[cod]).length;
+                return `Faltan ${40 - unidadesAprobadas} unidades aprobadas`;
+            }
+            
+            return materia.requisitos.filter(requisito => !estaAprobada(requisito)).join(", ");
+        }
+
+        // Renderizar la malla curricular
+        function renderizarMalla() {
+            const mallaContainer = document.getElementById('malla-container');
+            mallaContainer.innerHTML = '';
+
+            mallaData.forEach(anoData => {
+                const anoDiv = document.createElement('div');
+                anoDiv.className = 'ano';
+
+                const anoTitulo = document.createElement('div');
+                anoTitulo.className = 'ano-titulo';
+                anoTitulo.textContent = anoData.ano;
+                anoDiv.appendChild(anoTitulo);
+
+                anoData.trimestres.forEach(trimestre => {
+                    const trimestreDiv = document.createElement('div');
+                    trimestreDiv.className = 'trimestre';
+
+                    const trimestreTitulo = document.createElement('div');
+                    trimestreTitulo.className = 'trimestre-titulo';
+                    trimestreTitulo.textContent = trimestre.nombre;
+                    trimestreDiv.appendChild(trimestreTitulo);
+
+                    trimestre.materias.forEach(materia => {
+                        const materiaDiv = document.createElement('div');
+                        materiaDiv.className = 'materia';
+                        materiaDiv.dataset.codigo = materia.codigo;
+                        
+                        // Aplicar color según el tipo de materia
+                        materiaDiv.style.backgroundColor = colores[materia.color] || colores.beige;
+                        
+                        // Verificar estado de la materia
+                        const aprobada = estaAprobada(materia.codigo);
+                        const bloqueada = !aprobada && estaBloqueada(materia);
+                        
+                        if (aprobada) {
+                            materiaDiv.classList.add('aprobada');
+                        } else if (bloqueada) {
+                            materiaDiv.classList.add('materia-bloqueada');
+                            
+                            // Agregar tooltip con requisitos faltantes
+                            const tooltip = document.createElement('div');
+                            tooltip.className = 'tooltip';
+                            tooltip.textContent = `Requisitos: ${obtenerRequisitosFaltantes(materia)}`;
+                            materiaDiv.appendChild(tooltip);
+                        } else {
+                            // Solo agregar evento click si no está bloqueada
+                            materiaDiv.addEventListener('click', () => toggleMateria(materia.codigo));
+                        }
+
+                        const codigoDiv = document.createElement('div');
+                        codigoDiv.className = 'codigo';
+                        codigoDiv.textContent = materia.codigo;
+                        materiaDiv.appendChild(codigoDiv);
+
+                        const nombreDiv = document.createElement('div');
+                        nombreDiv.className = 'nombre';
+                        nombreDiv.textContent = materia.nombre;
+                        materiaDiv.appendChild(nombreDiv);
+
+                        if (materia.requisitos) {
+                            const requisitosDiv = document.createElement('div');
+                            requisitosDiv.className = 'requisitos';
+                            requisitosDiv.textContent = `Requisitos: ${materia.requisitos.join(', ')}`;
+                            materiaDiv.appendChild(requisitosDiv);
+                        }
+
+                        trimestreDiv.appendChild(materiaDiv);
+                    });
+
+                    anoDiv.appendChild(trimestreDiv);
+                });
+
+                mallaContainer.appendChild(anoDiv);
+            });
+
+            // Dibujar líneas de conexión después de renderizar
+            setTimeout(dibujarLineasConexion, 100);
+        }
+
+        // Dibujar líneas de conexión entre materias
+        function dibujarLineasConexion() {
+            // Eliminar líneas existentes
+            document.querySelectorAll('.linea-conexion').forEach(linea => linea.remove());
+            
+            const mallaContainer = document.getElementById('malla-container');
+            
+            // Para cada materia con requisitos, dibujar líneas a sus prerequisitos
+            mallaData.forEach(anoData => {
+                anoData.trimestres.forEach(trimestre => {
+                    trimestre.materias.forEach(materia => {
+                        if (materia.requisitos) {
+                            materia.requisitos.forEach(requisitoCodigo => {
+                                const materiaOrigen = document.querySelector(`.materia[data-codigo="${requisitoCodigo}"]`);
+                                const materiaDestino = document.querySelector(`.materia[data-codigo="${materia.codigo}"]`);
+                                
+                                if (materiaOrigen && materiaDestino) {
+                                    const origenRect = materiaOrigen.getBoundingClientRect();
+                                    const destinoRect = materiaDestino.getBoundingClientRect();
+                                    const containerRect = mallaContainer.getBoundingClientRect();
+                                    
+                                    const origenX = origenRect.left + origenRect.width / 2 - containerRect.left;
+                                    const origenY = origenRect.top + origenRect.height - containerRect.top;
+                                    const destinoX = destinoRect.left + destinoRect.width / 2 - containerRect.left;
+                                    const destinoY = destinoRect.top - containerRect.top;
+                                    
+                                    const distanciaX = destinoX - origenX;
+                                    const distanciaY = destinoY - origenY;
+                                    
+                                    const longitud = Math.sqrt(distanciaX * distanciaX + distanciaY * distanciaY);
+                                    const angulo = Math.atan2(distanciaY, distanciaX) * 180 / Math.PI;
+                                    
+                                    const linea = document.createElement('div');
+                                    linea.className = 'linea-conexion';
+                                    linea.style.width = `${longitud}px`;
+                                    linea.style.height = '2px';
+                                    linea.style.left = `${origenX}px`;
+                                    linea.style.top = `${origenY}px`;
+                                    linea.style.transform = `rotate(${angulo}deg)`;
+                                    linea.style.transformOrigin = '0 0';
+                                    
+                                    mallaContainer.appendChild(linea);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+        // Alternar estado de una materia
+        function toggleMateria(codigo) {
+            materiasEstado[codigo] = !materiasEstado[codigo];
+            guardarEstado();
+            renderizarMalla();
+        }
+
+        // Reiniciar progreso
+        function reiniciarProgreso() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todo tu progreso?')) {
+                materiasEstado = {};
+                guardarEstado();
+                renderizarMalla();
+            }
+        }
+
+        // Marcar todas las materias como aprobadas
+        function marcarTodoAprobado() {
+            mallaData.forEach(anoData => {
+                anoData.trimestres.forEach(trimestre => {
+                    trimestre.materias.forEach(materia => {
+                        materiasEstado[materia.codigo] = true;
+                    });
+                });
+            });
+            guardarEstado();
+            renderizarMalla();
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarEstado();
+            renderizarMalla();
+            
+            document.getElementById('btnReiniciar').addEventListener('click', reiniciarProgreso);
+            document.getElementById('btnMarcarTodo').addEventListener('click', marcarTodoAprobado);
+            
+            // Redibujar líneas cuando la ventana cambie de tamaño
+            window.addEventListener('resize', dibujarLineasConexion);
+        });
+    </script>
+</body>
+</html>
